@@ -40,6 +40,11 @@ class Il2CppResolver {
   // Strategy 1: exported il2cpp API.
   bool bindExportedApi(void* image_base);
 
+  // True once the IL2CPP runtime is up. The game image shows up in the dyld
+  // list before il2cpp_init() ran, and asking for a class before that returns
+  // nothing (or worse), so the caller waits for this before installing.
+  bool runtimeReady() const;
+
   // Optional extra API: needed to build managed strings for static string
   // fields. Returns false when the game does not export it.
   bool bindStringApi(void* image_base);
@@ -81,6 +86,13 @@ class Il2CppResolver {
   using FnClassFromName = void* (*)(const char*, const char*, const char*);
   using FnClassGetMethodFromName = void* (*)(void*, const char*, int);
   using FnClassGetFieldFromName = void* (*)(void*, const char*);
+  // Readiness probes: both are exported by a stock IL2CPP build and both
+  // return null until the runtime is initialised.
+  using FnDomainGet = void* (*)();
+  using FnThreadCurrent = void* (*)();
+
+  FnDomainGet domain_get_ = nullptr;
+  FnThreadCurrent thread_current_ = nullptr;
 
   FnClassFromName class_from_name_ = nullptr;
   FnClassGetMethodFromName class_get_method_from_name_ = nullptr;

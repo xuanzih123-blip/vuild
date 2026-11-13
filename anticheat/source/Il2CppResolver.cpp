@@ -44,11 +44,22 @@ bool Il2CppResolver::bindExportedApi(void* image_base) {
       dlsym(image_base, "il2cpp_class_get_method_from_name"));
   class_get_field_from_name_ = reinterpret_cast<FnClassGetFieldFromName>(
       dlsym(image_base, "il2cpp_class_get_field_from_name"));
+  domain_get_ = reinterpret_cast<FnDomainGet>(dlsym(image_base, "il2cpp_domain_get"));
+  thread_current_ =
+      reinterpret_cast<FnThreadCurrent>(dlsym(image_base, "il2cpp_thread_current"));
   return class_from_name_ != nullptr && class_get_method_from_name_ != nullptr;
 #else
   (void)image_base;
   return false;
 #endif
+}
+
+bool Il2CppResolver::runtimeReady() const {
+  // The game image is in the dyld list before il2cpp_init() ran. Asking the
+  // runtime for a class before that returns nothing, so the caller waits.
+  if (domain_get_) return domain_get_() != nullptr;
+  if (thread_current_) return thread_current_() != nullptr;
+  return true;  // no probe exported: the caller has to try and see
 }
 
 bool Il2CppResolver::bindStringApi(void* image_base) {

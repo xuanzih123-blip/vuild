@@ -74,13 +74,16 @@ Fine-grained tokens, quyền `Contents: Read and write`.)
 ## Bước 4 — Tải file `.dylib` về
 
 1. Ở lần chạy vừa rồi, cuộn xuống phần **Artifacts**, thấy:
-   - `TIZAntiCheat-dylib`
+   - `TIZAntiCheat-install`  ← **cái này, chứa cả dylib lẫn file filter**
+   - `TIZAntiCheat-dylib`    ← chỉ có dylib
    - `TIZAntiCheat-hooks`
-2. Bấm vào `TIZAntiCheat-dylib` → GitHub tải về một file **.zip**.
-3. Giải nén zip trên máy tính → bên trong có **`TIZAntiCheat.dylib`** (khoảng
-   vài chục KB).
+2. Bấm vào `TIZAntiCheat-install` → GitHub tải về một file **.zip**.
+3. Giải nén zip trên máy tính → bên trong có 2 file:
+   - `TIZAntiCheat.dylib` (vài chục KB)
+   - `TIZAntiCheat.plist` (file filter của Substrate, giới hạn injection
+     vào đúng app Free Fire)
 
-## Bước 5 — Copy `.dylib` vào iPhone
+## Bước 5 — Copy vào iPhone
 
 Cần iPhone đã jailbreak. Cách nhanh nhất nếu bạn dùng **SSH/SFTP** (WindSFTP,
 iFile, Cyberduck…):
@@ -90,11 +93,26 @@ iFile, Cyberduck…):
 /Library/MobileSubstrate/DynamicLibraries/
 ```
 
-Copy `TIZAntiCheat.dylib` vào đó. Xong phải **reboot máy** (hoặc respring) để
-Substrate nạp lại danh sách dylib.
+Copy **cả 2 file** (`TIZAntiCheat.dylib` và `TIZAntiCheat.plist`) vào đó. Xong
+phải **reboot máy** (hoặc respring) để Substrate nạp lại danh sách dylib.
 
 > Cách làm trên điện thoại: mở **Filza**, đi tới
 > `/Library/MobileSubstrate/DynamicLibraries/`, dán file vào.
+
+### Tiêm vào app nào?
+
+Vào **app Free Fire gốc** (app chơi được, bundle id `com.dts.freefireth`).
+
+App `TIZ FF IOS` (`vn.tizffios.freefireth`, chính là file `.tipa` tao vá) là app
+menu: nó tự tìm process Free Fire đang chạy rồi tiêm cheat của nó vào, HUD
+cũng vẽ **bên trong** process game. Dylib của tao hook các class IL2CPP
+(`COW.GameFacade`, `COW.EventLogger`…) — những class đó nằm trong
+`UnityFramework` của game, **không có** trong app menu. Nạp vào app menu thì
+log sẽ ra `game image never appeared, giving up` và không hook được gì.
+
+Nếu bản game của bạn có bundle id khác (bản mod, bản Trung Quốc…): mở
+`TIZAntiCheat.plist` bằng Filza, thêm id đó vào mảng `Bundles`.
+
 
 ## Bước 6 — Mở game và xem log
 

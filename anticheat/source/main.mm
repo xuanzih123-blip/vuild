@@ -112,6 +112,13 @@ void* InstallThread(void* unused) {
               name.c_str());
       }
       resolver.bindStringApi(base);
+      // The image is mapped before the runtime is initialised: wait for it,
+      // otherwise every class lookup comes back empty.
+      for (int i = 0; i < 120 && !resolver.runtimeReady(); ++i) {
+        usleep(500 * 1000);
+      }
+      NSLog(@"[TIZAntiCheat] runtime %@",
+            resolver.runtimeReady() ? @"ready" : @"not ready, trying anyway");
       InstallReport report = installHooks(*table, resolver);
       NSLog(@"[TIZAntiCheat] installed %d, skipped %d, failed %d",
             report.installed, report.skipped, report.failed);

@@ -86,6 +86,25 @@ def step_materialise(spec, dry_run):
         with open(dest, "w", encoding="utf8", newline="\n") as f:
             f.write(body)
         log("materialised %s" % rel)
+
+    # the generated hook table headers belong to the same tree, otherwise the
+    # #include in main.mm does not resolve
+    data = spec.get("data", {})
+    for key in ("hooks_embedded_header", "hooks_json"):
+        rel = data.get(key)
+        if not rel:
+            continue
+        src = os.path.join(ROOT, rel)
+        if not os.path.exists(src):
+            log("generated file missing: %s (run the generate step)" % rel)
+            continue
+        dest = os.path.join(out_dir, rel)
+        if dry_run:
+            log("would copy %s -> %s" % (rel, dest))
+            continue
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
+        shutil.copy2(src, dest)
+        log("copied %s into the build tree" % rel)
     return 0
 
 
@@ -124,6 +143,9 @@ def step_compile(spec, dry_run, toolchain_override=None):
                            spec.get("target", {}).get("output", "out.dylib"))
         cmd = ["xcrun", "--sdk", "iphoneos", "clang++", "-arch", "arm64",
                "-miphoneos-version-min=13.0", "-dynamiclib"]
+        # the generated hook table header lives in source/, the code in build/src
+        cmd += ["-I%s" % os.path.join(src_root, "source"),
+                "-I%s" % os.path.join(ROOT, "source")]
         cmd += cxxflags + ldflags + sources + ["-framework", "Foundation", "-o", out]
         rc = run(cmd, ROOT, dry_run)
         if rc != 0:

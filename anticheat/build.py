@@ -137,10 +137,12 @@ def step_sign(spec, dry_run):
     if not shutil.which("ldid"):
         log("ldid not found - the dylib stays unsigned (install will fail)")
         return 0
-    cmd = ["ldid", "-S"]
+    # ldid takes the entitlements as a positional argument AFTER the binary:
+    #   ldid -S <binary> <entitlements>
+    # (-e means "extract entitlements", it is not the entitlements input)
+    cmd = ["ldid", "-S", out]
     if ent:
-        cmd += ["-e", os.path.join(ROOT, ent)]
-    cmd += [out]
+        cmd += [os.path.join(ROOT, ent)]
     return run(cmd, ROOT, dry_run)
 
 

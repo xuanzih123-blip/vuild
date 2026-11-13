@@ -95,7 +95,9 @@ jobs:
       - name: Sign and inspect the dylib
         working-directory: anticheat
         run: |
-          ldid -S -e resources/entitlements.plist build/TIZAntiCheat.dylib
+          # ldid takes the entitlements as a positional argument AFTER the binary
+          ldid -S build/TIZAntiCheat.dylib resources/entitlements.plist
+          ldid -e build/TIZAntiCheat.dylib
           lipo -info build/TIZAntiCheat.dylib
           file build/TIZAntiCheat.dylib
           ls -l build/TIZAntiCheat.dylib

@@ -146,6 +146,21 @@ jobs:
           PY
           nm -gU build/TIZAntiCheat.dylib | head -20 || true
 
+      - name: Stage the install bundle
+        working-directory: anticheat
+        run: |
+          mkdir -p build/install
+          cp build/TIZAntiCheat.dylib build/install/
+          cp resources/TIZAntiCheat.plist build/install/
+          ls -l build/install
+
+      - name: Upload the install bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: TIZAntiCheat-install
+          path: anticheat/build/install
+          if-no-files-found: error
+
       - name: Upload the dylib
         uses: actions/upload-artifact@v4
         with:

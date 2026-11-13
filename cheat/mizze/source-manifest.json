@@ -3,24 +3,94 @@
   "authentication": "removed",
   "files": [
     {
+      "path": "API/hi",
+      "bytes": 5,
+      "sha256": "4445e94ec7e2416e646fd02ab15105a241bc7e6dd626857aeb65f99c571ea92d"
+    },
+    {
+      "path": "Font/GFF-Latin-Bold.ttf",
+      "bytes": 71832,
+      "sha256": "607dcd5737837e2c2f35c343d7b2298d70dc0ee19dc3e425cf191048b9340d6f"
+    },
+    {
+      "path": "Font/Headliner No. 45 400.ttf",
+      "bytes": 526824,
+      "sha256": "3b183ecf4d15326c564a74503ce295fca3f67bf2e4cf18c727440f3b3cce6741"
+    },
+    {
+      "path": "Font/Headliner.ttf",
+      "bytes": 526824,
+      "sha256": "3b183ecf4d15326c564a74503ce295fca3f67bf2e4cf18c727440f3b3cce6741"
+    },
+    {
+      "path": "KabraxHide.h",
+      "bytes": 26447,
+      "sha256": "d1b63be44264968b9bf6b5d28c038536c3f75409f2415ea47506c826734c2ccc"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1205,
+      "sha256": "a4a607d601c98fdb62dd0cad11b0a68944ac38d60f29eb92c1bc45e7bfd2fa0e"
+    },
+    {
+      "path": "XorString.h",
+      "bytes": 1540,
+      "sha256": "2ace876512f590ee70e982d151d580d48fbbd36dbc9dfc2722917ceda3ca2df5"
+    },
+    {
+      "path": "anticheat/AntiBan.mm",
+      "bytes": 2900,
+      "sha256": "988b2173d2307ee5e14ead20bf3f74c6428847fce615d62a42fecf0ec576cb20"
+    },
+    {
+      "path": "anticheat/Hooks.cpp",
+      "bytes": 9511,
+      "sha256": "f7e94c123eebca26a1d14fd66f92dd1c14cbd904c2a27d76228f13a72c1e6ff7"
+    },
+    {
+      "path": "anticheat/Hooks.h",
+      "bytes": 1336,
+      "sha256": "46aa0386bfe24b6e1d4dba7300a4283fb9fec2253b834b37d3cb55d46779c150"
+    },
+    {
+      "path": "anticheat/Il2CppApi.cpp",
+      "bytes": 7164,
+      "sha256": "bd618eb174b4925bdd461db79d02c07b847ddd788efc31f68c9ff5245780799b"
+    },
+    {
+      "path": "anticheat/Il2CppApi.h",
+      "bytes": 4513,
+      "sha256": "f7647e39f3c275b9cde0a816468f8d359d4a1db52226d4edc45761b59a432182"
+    },
+    {
+      "path": "anticheat/ProfileProbe.h",
+      "bytes": 299,
+      "sha256": "c54e60bda6f7e5cce4982d35b58e153cc11405d58c73cf8ccbcf6d400a891292"
+    },
+    {
+      "path": "anticheat/ProfileProbe.mm",
+      "bytes": 2848,
+      "sha256": "07202a32eb747011b2609f0573e646c356c4d66af37c858d7a32c6b3df390abf"
+    },
+    {
+      "path": "anticheat/Sanitizer.h",
+      "bytes": 461,
+      "sha256": "2a8a2ced31958489eafd06b4f9dbe2bf4d0c033c6d7e632c5f25a11ec978cefc"
+    },
+    {
+      "path": "anticheat/Sanitizer.mm",
+      "bytes": 2073,
+      "sha256": "be063eb77ca9a03526af4f1817edc3d44f8cacfc078edefac2d9edb4dd188e5e"
+    },
+    {
+      "path": "anticheat/Spoof.mm",
+      "bytes": 10219,
+      "sha256": "3d27ce6888f286478a364ad28257ad46b3085ceac992b75a73aeff10cfe49659"
+    },
+    {
       "path": "control",
       "bytes": 224,
       "sha256": "d18709f8b48f401dfb83f6e19688780350be19490738317f28376a21e15cf5e4"
-    },
-    {
-      "path": "esp/Core/_0xGL2972_.mm",
-      "bytes": 12529,
-      "sha256": "645bd1b4a36d3d873e6793b28991c63a98d854ef9e6b2df75e4de9f92382b5af"
-    },
-    {
-      "path": "esp/Core/_0xPDFFFF27.mm",
-      "bytes": 10591,
-      "sha256": "391c24df24bf22acc63058077a9e3cb927ef3a9a4b3bb8bd65b2f3f546aa7527"
-    },
-    {
-      "path": "esp/Core/_0xUNT2872_.mm",
-      "bytes": 7318,
-      "sha256": "e5ee7a7f881ac08c00672350b388560ead3df71fb37188e49c1f6d07a50d52a5"
     },
     {
       "path": "esp/Core/AimModePolicy.h",
@@ -113,16 +183,6 @@
       "sha256": "c601bfe9da58e2da8813d240db3b8d464bc45deae04da7c80fb6932cdf35881a"
     },
     {
-      "path": "esp/Core/kern_control.h",
-      "bytes": 30708,
-      "sha256": "3ef44548a76a3918ac90d7af5427b3a4a1ffb70263e290a74a17f6113543de72"
-    },
-    {
-      "path": "esp/Core/libproc.h",
-      "bytes": 8059,
-      "sha256": "0e2f7f9fde27465547f71dd9bde17e702a66e304134cc8c86a857c8a4b6f9523"
-    },
-    {
       "path": "esp/Core/MaxNativeVerified.h",
       "bytes": 5320,
       "sha256": "28c9d342aa2a3900c8faa646b4c2ccd31353e858fd797f26a890fc0b6ce511d8"
@@ -131,11 +191,6 @@
       "path": "esp/Core/OverlayHealth.h",
       "bytes": 1715,
       "sha256": "5c04f9d9de553818a8345b7eddfb8deee796de5d58851b57f6b142f5abf3e3a5"
-    },
-    {
-      "path": "esp/Core/pid.h",
-      "bytes": 4628,
-      "sha256": "d39938ab6ecdeb115b34807ed2c2dd51d42cb977d5d2f2d2b153b75ef25cee5d"
     },
     {
       "path": "esp/Core/PlayerModes.h",
@@ -148,14 +203,14 @@
       "sha256": "20190d420e5cf7d4d4de18556c264472b2a4d33dabfcbc1ad0acee5c58846d78"
     },
     {
-      "path": "esp/Core/PlayerModesControllerPolicy.h",
-      "bytes": 1237,
-      "sha256": "0994e424580a33f51cd87d6143cd906c491b7151dd6e8b4d0fd4b9dd16b4c166"
-    },
-    {
       "path": "esp/Core/PlayerModesControlPolicy.h",
       "bytes": 1163,
       "sha256": "8505dac5fe260c5ae08b4e7497495f43064ab328bf5b9f8b5e39fb8a4189ebc4"
+    },
+    {
+      "path": "esp/Core/PlayerModesControllerPolicy.h",
+      "bytes": 1237,
+      "sha256": "0994e424580a33f51cd87d6143cd906c491b7151dd6e8b4d0fd4b9dd16b4c166"
     },
     {
       "path": "esp/Core/PlayerModesInstallPolicy.h",
@@ -178,19 +233,14 @@
       "sha256": "ac179641afd14bb6c7a4613c2ed0a79b5f805643bd9f2f226b4b4b872374d3f9"
     },
     {
-      "path": "esp/Core/proc_info.h",
-      "bytes": 39089,
-      "sha256": "6c24f11156eddd0a0be948fc88c9efb4134514683725b0f1b305933241386be0"
-    },
-    {
       "path": "esp/Core/Quaternion.h",
       "bytes": 24127,
       "sha256": "777425b887982e0ad329f3116dd3986b6834e450a3e72d21dae7359c6bbd3ebc"
     },
     {
       "path": "esp/Core/RunSpeed.h",
-      "bytes": 1873,
-      "sha256": "5b0b07dff5158186a8ccf7b6abde343c73a217205aea326590b4a41102055205"
+      "bytes": 2110,
+      "sha256": "5a1ec18871dd68ca2d229c11018f10c1fdd4e83f7c499d905866bb62d974acd1"
     },
     {
       "path": "esp/Core/SilentAim.h",
@@ -258,11 +308,6 @@
       "sha256": "f8b3c5864157fa3a35d20623d1ad80705a5b053268ed02942224fff47953d260"
     },
     {
-      "path": "esp/Core/utf.h",
-      "bytes": 5269,
-      "sha256": "f0bb9f773f98e8f0558bac7bb90f23606e481756bad6ae23794d6866eb564263"
-    },
-    {
       "path": "esp/Core/Vector3.h",
       "bytes": 12049,
       "sha256": "616bd7082004351d3917c749eb36c0a016a8538e64416521e06d3ffba2a4308c"
@@ -278,34 +323,44 @@
       "sha256": "ec4443a71af72c28477c20bc557c1544380ab133c20ca8ccbc8ac5d962a9e28e"
     },
     {
-      "path": "esp/drawing_view/_0xE298S9_.mm",
-      "bytes": 44500,
-      "sha256": "a450a23c8903569b3b0ef42f6c235dc21ed1db6b64a315bfae38f47db0141ed2"
+      "path": "esp/Core/_0xGL2972_.mm",
+      "bytes": 12529,
+      "sha256": "645bd1b4a36d3d873e6793b28991c63a98d854ef9e6b2df75e4de9f92382b5af"
     },
     {
-      "path": "esp/drawing_view/_0xEDR2862_.mm",
-      "bytes": 13840,
-      "sha256": "06741ee609931b2e2f761e49747ac608cfddff888fd190773ef8f7c3c056c85d"
+      "path": "esp/Core/_0xPDFFFF27.mm",
+      "bytes": 10591,
+      "sha256": "391c24df24bf22acc63058077a9e3cb927ef3a9a4b3bb8bd65b2f3f546aa7527"
     },
     {
-      "path": "esp/drawing_view/_0xEPR2872_.mm",
-      "bytes": 1312,
-      "sha256": "7755e95de3cb68280ea3beaa30ca152271dce67ba79518aed71a75fe1ad01669"
+      "path": "esp/Core/_0xUNT2872_.mm",
+      "bytes": 7318,
+      "sha256": "e5ee7a7f881ac08c00672350b388560ead3df71fb37188e49c1f6d07a50d52a5"
     },
     {
-      "path": "esp/drawing_view/_0xIC2872_.mm",
-      "bytes": 267054,
-      "sha256": "a7829782846a5bdcf80ebb9550fdbae884d050faf3f58b742781f0dd50e2a405"
+      "path": "esp/Core/kern_control.h",
+      "bytes": 30708,
+      "sha256": "3ef44548a76a3918ac90d7af5427b3a4a1ffb70263e290a74a17f6113543de72"
     },
     {
-      "path": "esp/drawing_view/_0xMU2872_.mm",
-      "bytes": 18333,
-      "sha256": "d86692ee315b2fa3e9082a6e681fd36c960e595f7db40a67da02ee1a710335dc"
+      "path": "esp/Core/libproc.h",
+      "bytes": 8059,
+      "sha256": "0e2f7f9fde27465547f71dd9bde17e702a66e304134cc8c86a857c8a4b6f9523"
     },
     {
-      "path": "esp/drawing_view/esp.h",
-      "bytes": 3197,
-      "sha256": "13e881fc40ebcd6912b981a2c9251fe1be7eb4ef8cdf59e2fb5786ea6d6b4b6b"
+      "path": "esp/Core/pid.h",
+      "bytes": 4628,
+      "sha256": "d39938ab6ecdeb115b34807ed2c2dd51d42cb977d5d2f2d2b153b75ef25cee5d"
+    },
+    {
+      "path": "esp/Core/proc_info.h",
+      "bytes": 39089,
+      "sha256": "6c24f11156eddd0a0be948fc88c9efb4134514683725b0f1b305933241386be0"
+    },
+    {
+      "path": "esp/Core/utf.h",
+      "bytes": 5269,
+      "sha256": "f0bb9f773f98e8f0558bac7bb90f23606e481756bad6ae23794d6866eb564263"
     },
     {
       "path": "esp/drawing_view/ESPPrefs.h",
@@ -328,6 +383,46 @@
       "sha256": "b7c1dff291046f316885bfc6e2a7ad9d3a54b8ca152531be2d54348ea938f0d6"
     },
     {
+      "path": "esp/drawing_view/OverlayGeometry.h",
+      "bytes": 1339,
+      "sha256": "47a6498820bc4f59e1569190a964000955f13b68e1617dfc52fc539ca0133e33"
+    },
+    {
+      "path": "esp/drawing_view/WorldAxes.h",
+      "bytes": 3586,
+      "sha256": "b24e9969dfab0a35450672c7db9f33e869e3bfbf153c1166b7bd106e63a18c5f"
+    },
+    {
+      "path": "esp/drawing_view/_0xE298S9_.mm",
+      "bytes": 42234,
+      "sha256": "dd44682bc93a015ff03026147ac0e98a6c48d654e74fa1c19201fc4a3fce37be"
+    },
+    {
+      "path": "esp/drawing_view/_0xEDR2862_.mm",
+      "bytes": 13840,
+      "sha256": "06741ee609931b2e2f761e49747ac608cfddff888fd190773ef8f7c3c056c85d"
+    },
+    {
+      "path": "esp/drawing_view/_0xEPR2872_.mm",
+      "bytes": 1312,
+      "sha256": "7755e95de3cb68280ea3beaa30ca152271dce67ba79518aed71a75fe1ad01669"
+    },
+    {
+      "path": "esp/drawing_view/_0xIC2872_.mm",
+      "bytes": 267054,
+      "sha256": "a7829782846a5bdcf80ebb9550fdbae884d050faf3f58b742781f0dd50e2a405"
+    },
+    {
+      "path": "esp/drawing_view/_0xMU2872_.mm",
+      "bytes": 17978,
+      "sha256": "bed5244794cb2d598f509bb96473df7617e5f40ad3b2c56e3f743c51b727507b"
+    },
+    {
+      "path": "esp/drawing_view/esp.h",
+      "bytes": 3197,
+      "sha256": "13e881fc40ebcd6912b981a2c9251fe1be7eb4ef8cdf59e2fb5786ea6d6b4b6b"
+    },
+    {
       "path": "esp/drawing_view/icons.h",
       "bytes": 131,
       "sha256": "50506b3448fa4def9295cac07d71a268c9e0c2bbbd3fc49a4763659099708142"
@@ -341,31 +436,6 @@
       "path": "esp/drawing_view/offset.h",
       "bytes": 3475,
       "sha256": "5d7932700176dc6c02d071a3bce32edcb35c93c1601ba41e4907523bb198491c"
-    },
-    {
-      "path": "esp/drawing_view/OverlayGeometry.h",
-      "bytes": 1339,
-      "sha256": "47a6498820bc4f59e1569190a964000955f13b68e1617dfc52fc539ca0133e33"
-    },
-    {
-      "path": "esp/drawing_view/WorldAxes.h",
-      "bytes": 3586,
-      "sha256": "b24e9969dfab0a35450672c7db9f33e869e3bfbf153c1166b7bd106e63a18c5f"
-    },
-    {
-      "path": "Font/GFF-Latin-Bold.ttf",
-      "bytes": 71832,
-      "sha256": "607dcd5737837e2c2f35c343d7b2298d70dc0ee19dc3e425cf191048b9340d6f"
-    },
-    {
-      "path": "Font/Headliner No. 45 400.ttf",
-      "bytes": 526824,
-      "sha256": "3b183ecf4d15326c564a74503ce295fca3f67bf2e4cf18c727440f3b3cce6741"
-    },
-    {
-      "path": "Font/Headliner.ttf",
-      "bytes": 526824,
-      "sha256": "3b183ecf4d15326c564a74503ce295fca3f67bf2e4cf18c727440f3b3cce6741"
     },
     {
       "path": "headers/AXEventHandInfoRepresentation.h",
@@ -401,16 +471,6 @@
       "path": "headers/IOKit+SPI.h",
       "bytes": 194,
       "sha256": "247dedfada92d452778174ee46855e632c8d0d0758698d0aebef0f02e0182bcb"
-    },
-    {
-      "path": "headers/pac_helper.h",
-      "bytes": 558,
-      "sha256": "b919c5ddf5eb29937168db5279274848b6d3ebc5757a61985022fb66e35e6471"
-    },
-    {
-      "path": "headers/rootless.h",
-      "bytes": 1044,
-      "sha256": "4afd0f0bfec16b8a02d0dfb17b11ab7ca48917e10fb6f1239b6bdadfbd2ceee3"
     },
     {
       "path": "headers/SBSAccessibilityWindowHostingController.h",
@@ -453,14 +513,34 @@
       "sha256": "217ab7541ddc7df6756fc183a880e114aa93c15b1030bb04738244ac0e83e6e7"
     },
     {
+      "path": "headers/pac_helper.h",
+      "bytes": 558,
+      "sha256": "b919c5ddf5eb29937168db5279274848b6d3ebc5757a61985022fb66e35e6471"
+    },
+    {
+      "path": "headers/rootless.h",
+      "bytes": 1044,
+      "sha256": "4afd0f0bfec16b8a02d0dfb17b11ab7ca48917e10fb6f1239b6bdadfbd2ceee3"
+    },
+    {
       "path": "iOSViet.plist",
       "bytes": 359,
       "sha256": "256b2d50788bc2175666b2a89599a0ae69811458bd20e2c626551f33e2265890"
     },
     {
-      "path": "KabraxHide.h",
-      "bytes": 26447,
-      "sha256": "d1b63be44264968b9bf6b5d28c038536c3f75409f2415ea47506c826734c2ccc"
+      "path": "layout/Resources/Settings.bundle/en.lproj/Root.strings",
+      "bytes": 214,
+      "sha256": "e32d3a8f2cf8ce96b3bf7554f114c5698fb5f8132a91adbd5c8d0aedaee4ef02"
+    },
+    {
+      "path": "layout/Resources/Settings.bundle/es.lproj/Root.strings",
+      "bytes": 214,
+      "sha256": "e32d3a8f2cf8ce96b3bf7554f114c5698fb5f8132a91adbd5c8d0aedaee4ef02"
+    },
+    {
+      "path": "layout/Resources/Settings.bundle/zh_Hans.lproj/Root.strings",
+      "bytes": 238,
+      "sha256": "760541ea5b3f6832d4f2b1665bf0548cba6c05f050d0a00d0beda455132bce8d"
     },
     {
       "path": "layout/Resources/en.lproj/InfoPlist.strings",
@@ -488,21 +568,6 @@
       "sha256": "e81b732eea73a1d8ea8374894bc453cdca4dcaf1a1d9fd79a8a65d3b02d06d43"
     },
     {
-      "path": "layout/Resources/Settings.bundle/en.lproj/Root.strings",
-      "bytes": 214,
-      "sha256": "e32d3a8f2cf8ce96b3bf7554f114c5698fb5f8132a91adbd5c8d0aedaee4ef02"
-    },
-    {
-      "path": "layout/Resources/Settings.bundle/es.lproj/Root.strings",
-      "bytes": 214,
-      "sha256": "e32d3a8f2cf8ce96b3bf7554f114c5698fb5f8132a91adbd5c8d0aedaee4ef02"
-    },
-    {
-      "path": "layout/Resources/Settings.bundle/zh_Hans.lproj/Root.strings",
-      "bytes": 238,
-      "sha256": "760541ea5b3f6832d4f2b1665bf0548cba6c05f050d0a00d0beda455132bce8d"
-    },
-    {
       "path": "layout/Resources/zh-Hans.lproj/InfoPlist.strings",
       "bytes": 82,
       "sha256": "90419f007e56f32812741632f4a0e34af9f9ae5e9dbd955ad4e9da62b8709a46"
@@ -513,14 +578,19 @@
       "sha256": "b32d85499072734a09fe65ad8b5488017f1a8c59d6082cbd87a6e7a30472fd07"
     },
     {
+      "path": "layout/var/mobile/Library/MobileSubstrate/DynamicLibraries/iOSViet.plist",
+      "bytes": 345,
+      "sha256": "e863648c040d3a9cd168988db6168d059a9ccc8d78948560baaf49b39d0c173c"
+    },
+    {
       "path": "mahoa.h",
       "bytes": 15673,
       "sha256": "be514aa10b6dcfec034f667fd5a3dc6f6ad093da712b7f295b1ac55306769e37"
     },
     {
       "path": "makefile",
-      "bytes": 1720,
-      "sha256": "a5b6bdb8bd86fb5295e61c32474b7b158869326dbbc45902b840bd25eac5ade2"
+      "bytes": 2535,
+      "sha256": "d63da2927de39d3036a7d0c9a77f16fba23e43d6374d857f530562cc2b37a723"
     },
     {
       "path": "obfuscation/AntiREProtection.h",
@@ -568,29 +638,19 @@
       "sha256": "91cf3ff487c3d895c9fccfd47caaa8fe440713be1071641c58f340e048256624"
     },
     {
-      "path": "README.md",
-      "bytes": 1205,
-      "sha256": "a4a607d601c98fdb62dd0cad11b0a68944ac38d60f29eb92c1bc45e7bfd2fa0e"
+      "path": "resources/entitlements.plist",
+      "bytes": 274,
+      "sha256": "6174d74c656bd05d873acaeddb0789aec7ee769f1410a6fdf046418b0d02df45"
     },
     {
-      "path": "sources/_0xC2863HD.h",
-      "bytes": 88,
-      "sha256": "3b7b5e398da071ca6ebfaddd6767ef4272db07856f61f3ad7cc101ee1f170101"
+      "path": "sources/APIClient.h",
+      "bytes": 1582,
+      "sha256": "125ce8d1ec52799cc98842360f81607e9920fcd25d6965f1fb8f7fb13d6e0c7e"
     },
     {
-      "path": "sources/_0xFAFAFFF.h",
-      "bytes": 112,
-      "sha256": "660f639bfd22ed4a1789a53dce9758f62b6d7e80976aeae8b19681cbb45be148"
-    },
-    {
-      "path": "sources/_0xMO353DA.mm",
-      "bytes": 43537,
-      "sha256": "174021a48e89cf9a48426a294bc257afb8e6c69ddf0512bd96a17ef25bc3ae1c"
-    },
-    {
-      "path": "sources/_0xViSecureV28.m",
-      "bytes": 1945,
-      "sha256": "50b558fd2ec43e26a5cad36c49f8308b28c0fb0c37dd6cac8b615360ae5b31c7"
+      "path": "sources/APIClientStub.mm",
+      "bytes": 2902,
+      "sha256": "6c8a39f42d891eb444c6d58b8fc38875226e230a5ee8ced4e77d9b8fb538c507"
     },
     {
       "path": "sources/AntiHook.h",
@@ -601,11 +661,6 @@
       "path": "sources/FishHookChecker.h",
       "bytes": 465,
       "sha256": "a03a9576879f601f1fbe8a4fb24df9782a2a8cdc42c85266eebfd92a566fee38"
-    },
-    {
-      "path": "sources/HomeViewController.h",
-      "bytes": 161,
-      "sha256": "ed39f2d1d82f3b56b894deac735456117449b8f17dc6f70e3f8f8392b9b04988"
     },
     {
       "path": "sources/HUDHelper.h",
@@ -626,6 +681,11 @@
       "path": "sources/HUDMainWindow.h",
       "bytes": 268,
       "sha256": "e35641c9e3bb5d718805780bd24d8e6c869c2856b05307183865b16443304bd6"
+    },
+    {
+      "path": "sources/HomeViewController.h",
+      "bytes": 161,
+      "sha256": "ed39f2d1d82f3b56b894deac735456117449b8f17dc6f70e3f8f8392b9b04988"
     },
     {
       "path": "sources/InfoViewController.h",
@@ -663,6 +723,11 @@
       "sha256": "edfcfe2c6e39288b4adfbf64d79182c8caa7e7ecad317fc7f9a4611c0a88b29a"
     },
     {
+      "path": "sources/MSHookFunctionChecker.h",
+      "bytes": 866,
+      "sha256": "799a50de37987231cb7f7590fadd9ceee94320469c63a8685f181db7b464060d"
+    },
+    {
       "path": "sources/MainApplication.h",
       "bytes": 104,
       "sha256": "3e0bf9d0d1601072e73630b0f4af3cba9bbc9e6c3c0b270f09623523fffaf295"
@@ -688,19 +753,14 @@
       "sha256": "873100c410b8170a8ad87ab3b55acb0494a64e34f1244d05576921168a44cbf6"
     },
     {
-      "path": "sources/MSHookFunctionChecker.h",
-      "bytes": 866,
-      "sha256": "799a50de37987231cb7f7590fadd9ceee94320469c63a8685f181db7b464060d"
-    },
-    {
       "path": "sources/ProxyChecker.h",
       "bytes": 492,
       "sha256": "9bdbacc75d93fb495d19639e57d8c5ae544801d39c05489570eb26a06996c9d4"
     },
     {
       "path": "sources/StealthDylibInit.mm",
-      "bytes": 4341,
-      "sha256": "2fe1322622850a3d85c9cda86824adfbab0d3324cc8b9b622f29384e296579f3"
+      "bytes": 4549,
+      "sha256": "a9e4acacf1eb336288ce4b63893b66af728794f7bfb16aac3fbd1dc811924ffc"
     },
     {
       "path": "sources/TSEventFetcher.h",
@@ -723,9 +783,35 @@
       "sha256": "c6c3aef19271cb3c79a984c94b5db27c8834a0f60d8c347a75661a9d74e66cc9"
     },
     {
-      "path": "XorString.h",
-      "bytes": 1540,
-      "sha256": "2ace876512f590ee70e982d151d580d48fbbd36dbc9dfc2722917ceda3ca2df5"
+      "path": "sources/_0xC2863HD.h",
+      "bytes": 88,
+      "sha256": "3b7b5e398da071ca6ebfaddd6767ef4272db07856f61f3ad7cc101ee1f170101"
+    },
+    {
+      "path": "sources/_0xFAFAFFF.h",
+      "bytes": 112,
+      "sha256": "660f639bfd22ed4a1789a53dce9758f62b6d7e80976aeae8b19681cbb45be148"
+    },
+    {
+      "path": "sources/_0xMO353DA.mm",
+      "bytes": 44986,
+      "sha256": "5df6341287f789ebdda4e3bb8443adbe3d3105b4518f9349a7a9e829d3e295ab"
+    },
+    {
+      "path": "sources/_0xViSecureV28.m",
+      "bytes": 1945,
+      "sha256": "50b558fd2ec43e26a5cad36c49f8308b28c0fb0c37dd6cac8b615360ae5b31c7"
+    },
+    {
+      "path": "sources/libAPIClient.a",
+      "bytes": 69371320,
+      "sha256": "1006c9e30e96022718854a08d3b1376cb08975c337b423025d2dcb2752efb801"
     }
-  ]
+  ],
+  "variant": "th",
+  "game": {
+    "bundle_id": "com.dts.freefireth",
+    "version": "1.132.1",
+    "build": "2019121207"
+  }
 }

@@ -50,7 +50,7 @@ jobs:
   dylib:
     name: dylib (macos, ${{ github.event.inputs.toolchain || 'xcrun' }})
     needs: host-check
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 30
 
     steps:

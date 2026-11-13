@@ -97,10 +97,10 @@ jobs:
         continue-on-error: true
         run: |
           set -x
-          # ldid wants the entitlements as a plain argument; different builds
-          # disagree about the order, so try both and keep whatever works.
-          ldid -S build/TIZAntiCheat.dylib resources/entitlements.plist || \
-          ldid -S resources/entitlements.plist build/TIZAntiCheat.dylib || \
+          # ldid takes the entitlements glued to the -S flag:
+          #   ldid -Sentitlements.plist <macho>
+          # A bare -S signs ad hoc, without any entitlements.
+          ldid -Sresources/entitlements.plist build/TIZAntiCheat.dylib || \
           ldid -S build/TIZAntiCheat.dylib || true
           ldid -e build/TIZAntiCheat.dylib || true
           lipo -info build/TIZAntiCheat.dylib
@@ -136,6 +136,11 @@ jobs:
               print("  %-16s %s" % (needle.decode(), "found" if ok else "MISSING"))
               if not ok:
                   missing.append(needle.decode())
+          # the entitlements are optional for loading, so this only warns
+          if b"platform-application" in blob:
+              print("  entitlements    present")
+          else:
+              print("  entitlements    MISSING (ad hoc signature, still loadable)")
           if text_size < 4096:
               print("FAIL: the dylib carries no code")
               sys.exit(1)

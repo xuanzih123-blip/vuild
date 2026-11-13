@@ -188,13 +188,16 @@ def step_sign(spec, dry_run):
     if not shutil.which("ldid"):
         log("ldid not found - the dylib stays unsigned (install will fail)")
         return 0
-    # ldid wants the entitlements as a plain argument; different builds
-    # disagree about the order, so try both and keep whatever works.
+    # ldid takes the entitlements glued to the -S flag, not as a separate
+    # argument:   ldid -Sentitlements.plist <macho>
+    # A bare -S signs ad hoc, without any entitlements.
     ent_path = os.path.join(ROOT, ent) if ent else None
-    variants = [[out, ent_path], [ent_path, out], [out]] if ent_path else [[out]]
-    for cmd in variants:
-        argv = ["ldid", "-S"] + [c for c in cmd if c]
-        rc = run(argv, ROOT, dry_run)
+    variants = []
+    if ent_path:
+        variants.append(["-S" + ent_path, out])
+    variants.append(["-S", out])
+    for argv in variants:
+        rc = run(["ldid"] + argv, ROOT, dry_run)
         if rc == 0:
             return 0
         log("ldid form failed, trying the next one")

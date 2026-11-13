@@ -112,11 +112,38 @@ jobs:
         working-directory: anticheat
         run: |
           set -x
-          # the hook code and the table must really be inside the binary
           ls -l build/TIZAntiCheat.dylib
-          otool -l build/TIZAntiCheat.dylib | grep -A4 __TEXT | head -20
-          strings build/TIZAntiCheat.dylib | grep -c TIZAntiCheat
-          strings build/TIZAntiCheat.dylib | grep -m3 -E "GameFacade|LogReportCheat"
+          python3 - <<'PY'
+          import subprocess, sys
+          path = "build/TIZAntiCheat.dylib"
+          blob = open(path, "rb").read()
+          out = subprocess.run(["otool", "-l", path], capture_output=True,
+                               text=True).stdout
+          lines = out.splitlines()
+          text_size = 0
+          for i, line in enumerate(lines):
+              if line.strip() == "sectname __text":
+                  for j in range(i, min(i + 12, len(lines))):
+                      if lines[j].strip().startswith("size "):
+                          text_size = int(lines[j].split()[1], 16)
+                          break
+                  break
+          print("file size  : %d bytes" % len(blob))
+          print("__text size: 0x%x (%d bytes)" % (text_size, text_size))
+          missing = []
+          for needle in (b"[TIZAntiCheat]", b"GameFacade", b"LogReportCheat"):
+              ok = needle in blob
+              print("  %-16s %s" % (needle.decode(), "found" if ok else "MISSING"))
+              if not ok:
+                  missing.append(needle.decode())
+          if text_size < 4096:
+              print("FAIL: the dylib carries no code")
+              sys.exit(1)
+          if missing:
+              print("FAIL: missing %s" % ", ".join(missing))
+              sys.exit(1)
+          print("SMOKE OK")
+          PY
           nm -gU build/TIZAntiCheat.dylib | head -20 || true
 
       - name: Upload the dylib

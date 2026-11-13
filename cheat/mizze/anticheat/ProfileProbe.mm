@@ -76,7 +76,7 @@ void logProfile(const Il2CppApi& api) {
           api.classInstanceSize(klass));
     // The class with the static fields is small, so every one of them is
     // printed. The big classes only print the offsets that matter.
-    const bool log_all = std::string(type) == "COW.GameVarDef";
+    bool log_all = std::string(type) == "COW.GameVarDef";
     api.forEachField(klass, &Visitor, &log_all);
   }
 }

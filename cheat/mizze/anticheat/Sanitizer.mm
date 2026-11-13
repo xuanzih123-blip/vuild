@@ -9,11 +9,16 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/ptrace.h>
 #include <unistd.h>
 
 #include <string>
 #include <vector>
+
+// The iOS SDK does not ship sys/ptrace.h, but the call is in libSystem.
+extern "C" int ptrace(int request, int pid, void* address, int data);
+#ifndef PT_DENY_ATTACH
+#define PT_DENY_ATTACH 31
+#endif
 
 namespace mizze {
 namespace sanitize {

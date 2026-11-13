@@ -97,7 +97,6 @@ jobs:
         continue-on-error: true
         run: |
           set -x
-          ldid 2>&1 | head -30 || true
           # ldid wants the entitlements as a plain argument; different builds
           # disagree about the order, so try both and keep whatever works.
           ldid -S build/TIZAntiCheat.dylib resources/entitlements.plist || \
@@ -108,6 +107,17 @@ jobs:
           file build/TIZAntiCheat.dylib
           ls -l build/TIZAntiCheat.dylib
           otool -l build/TIZAntiCheat.dylib | grep -A3 LC_CODE_SIGNATURE || true
+
+      - name: Smoke test the dylib
+        working-directory: anticheat
+        run: |
+          set -x
+          # the hook code and the table must really be inside the binary
+          ls -l build/TIZAntiCheat.dylib
+          otool -l build/TIZAntiCheat.dylib | grep -A4 __TEXT | head -20
+          strings build/TIZAntiCheat.dylib | grep -c TIZAntiCheat
+          strings build/TIZAntiCheat.dylib | grep -m3 -E "GameFacade|LogReportCheat"
+          nm -gU build/TIZAntiCheat.dylib | head -20 || true
 
       - name: Upload the dylib
         uses: actions/upload-artifact@v4

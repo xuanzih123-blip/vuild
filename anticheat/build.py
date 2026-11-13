@@ -94,9 +94,17 @@ def step_compile(spec, dry_run, toolchain_override=None):
     if toolchain_override:
         tool["kind"] = toolchain_override
     kind = tool.get("kind", "theos")
-    # compile from the materialised copy so the spec really is the source
+    # The inline sources are the authoritative list: a separate "sources:" key
+    # can silently go missing and then the link step produces an empty dylib.
     inline = spec.get("sources_inline") or {}
     src_root = os.path.join(ROOT, "build", "src") if inline else ROOT
+    source_names = [k for k in inline
+                    if k.endswith((".mm", ".cpp", ".cc", ".c", ".m"))]
+    if not source_names:
+        source_names = list(spec.get("sources") or [])
+    if not source_names:
+        log("no sources to compile (sources_inline is empty)")
+        return 2
     if inline and not os.path.isdir(src_root):
         log("run the materialise step first")
         return 2
@@ -111,14 +119,35 @@ def step_compile(spec, dry_run, toolchain_override=None):
     if kind == "xcrun":
         cxxflags = tool.get("cxxflags", [])
         ldflags = tool.get("ldflags", [])
-        sources = [os.path.join(src_root, s) for s in spec.get("sources", [])]
-        out = os.path.join(ROOT, "build", spec.get("target", {}).get("output", "out.dylib"))
-        cmd = ["xcrun", "--sdk", "iphoneos", "clang++", "-arch", "arm64", "-miphoneos-version-min=13.0",
-               "-dynamiclib", "-fobjc-arc", "-fblocks"]
+        sources = [os.path.join(src_root, s) for s in source_names]
+        out = os.path.join(ROOT, "build",
+                           spec.get("target", {}).get("output", "out.dylib"))
+        cmd = ["xcrun", "--sdk", "iphoneos", "clang++", "-arch", "arm64",
+               "-miphoneos-version-min=13.0", "-dynamiclib"]
         cmd += cxxflags + ldflags + sources + ["-framework", "Foundation", "-o", out]
-        return run(cmd, ROOT, dry_run)
+        rc = run(cmd, ROOT, dry_run)
+        if rc != 0:
+            return rc
+        return check_output(out, dry_run)
     log("unknown toolchain kind: %s" % kind)
     return 2
+
+
+def check_output(out, dry_run):
+    """Refuse to ship an empty dylib."""
+    if dry_run:
+        return 0
+    if not os.path.exists(out):
+        log("compiler produced no file: %s" % out)
+        return 2
+    with open(out, "rb") as f:
+        blob = f.read()
+    if len(blob) < 4096 or b"[TIZAntiCheat]" not in blob:
+        log("output looks empty (%d bytes, no hook code inside) - refusing"
+            % len(blob))
+        return 2
+    log("output ok: %d bytes, hook code present" % len(blob))
+    return 0
 
 
 def step_sign(spec, dry_run):

@@ -30,8 +30,8 @@ target:
 toolchain:
   kind: theos
   makefile: Makefile
-  cxxflags: [-fobjc-arc, -fblocks, -O2]
-  ldflags: [-Wl,-install_name,TIZAntiCheat, -Wl,-dead_strip]
+  cxxflags: ["-fobjc-arc", "-fblocks", "-O2"]
+  ldflags: ["-Wl,-install_name,TIZAntiCheat", "-Wl,-dead_strip"]
   theos_var: THEOS
 
 dependencies:

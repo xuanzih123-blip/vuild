@@ -60,6 +60,28 @@ bool Il2CppApi::bind(void* image_base) {
       dlsym(image_base, "il2cpp_class_from_name"));
   class_get_method_from_name_ = reinterpret_cast<FnClassGetMethodFromName>(
       dlsym(image_base, "il2cpp_class_get_method_from_name"));
+  class_get_field_from_name_ = reinterpret_cast<FnClassGetFieldFromName>(
+      dlsym(image_base, "il2cpp_class_get_field_from_name"));
+  field_get_offset_ =
+      reinterpret_cast<FnFieldGetOffset>(dlsym(image_base, "il2cpp_field_get_offset"));
+  field_static_set_value_ = reinterpret_cast<FnFieldStaticSetValue>(
+      dlsym(image_base, "il2cpp_field_static_set_value"));
+  string_new_ =
+      reinterpret_cast<FnStringNew>(dlsym(image_base, "il2cpp_string_new"));
+  class_get_fields_ =
+      reinterpret_cast<FnClassGetFields>(dlsym(image_base, "il2cpp_class_get_fields"));
+  field_get_name_ =
+      reinterpret_cast<FnFieldGetName>(dlsym(image_base, "il2cpp_field_get_name"));
+  field_get_parent_ =
+      reinterpret_cast<FnFieldGetParent>(dlsym(image_base, "il2cpp_field_get_parent"));
+  class_get_name_ =
+      reinterpret_cast<FnClassGetName>(dlsym(image_base, "il2cpp_class_get_name"));
+  class_get_namespace_ =
+      reinterpret_cast<FnClassGetNamespace>(dlsym(image_base, "il2cpp_class_get_namespace"));
+  class_get_parent_ =
+      reinterpret_cast<FnClassGetParent>(dlsym(image_base, "il2cpp_class_get_parent"));
+  class_instance_size_ = reinterpret_cast<FnClassInstanceSize>(
+      dlsym(image_base, "il2cpp_class_instance_size"));
   domain_get_ = reinterpret_cast<FnDomainGet>(dlsym(image_base, "il2cpp_domain_get"));
   thread_current_ =
       reinterpret_cast<FnThreadCurrent>(dlsym(image_base, "il2cpp_thread_current"));
@@ -82,6 +104,71 @@ void* Il2CppApi::classFromName(const char* ns, const char* cls) const {
 void* Il2CppApi::methodFromName(void* klass, const char* name, int argc) const {
   if (!class_get_method_from_name_ || !klass) return nullptr;
   return class_get_method_from_name_(klass, name, argc);
+}
+
+void* Il2CppApi::fieldFromName(void* klass, const char* name) const {
+  if (!class_get_field_from_name_ || !klass) return nullptr;
+  return class_get_field_from_name_(klass, name);
+}
+
+int Il2CppApi::fieldOffset(void* field) const {
+  if (!field_get_offset_ || !field) return -1;
+  return field_get_offset_(field);
+}
+
+bool Il2CppApi::setStaticValue(void* field, const void* value) const {
+  if (!field_static_set_value_ || !field || !value) return false;
+  field_static_set_value_(field, const_cast<void*>(value));
+  return true;
+}
+
+void* Il2CppApi::newManagedString(const char* utf8) const {
+  if (!string_new_ || !utf8) return nullptr;
+  return string_new_(utf8);
+}
+
+std::string Il2CppApi::className(void* klass) const {
+  if (!klass || !class_get_name_) return std::string();
+  const char* name = class_get_name_(klass);
+  const char* ns = class_get_namespace_ ? class_get_namespace_(klass) : nullptr;
+  std::string out;
+  if (ns && ns[0]) {
+    out = ns;
+    out.push_back('.');
+  }
+  if (name) out += name;
+  return out;
+}
+
+int Il2CppApi::classInstanceSize(void* klass) const {
+  if (!klass || !class_instance_size_) return -1;
+  return class_instance_size_(klass);
+}
+
+void Il2CppApi::forEachField(void* klass, FieldVisitor visitor, void* context) const {
+  if (!klass || !class_get_fields_ || !field_get_name_) return;
+  void* current = klass;
+  int guard = 0;
+  while (current && guard++ < 16) {
+    void* iterator = nullptr;
+    while (true) {
+      void* field = class_get_fields_(current, &iterator);
+      if (!field) break;
+      const char* name = field_get_name_(field);
+      int offset = field_get_offset_ ? field_get_offset_(field) : -1;
+      std::string owner_storage;
+      const char* owner = name ? name : "?";
+      if (field_get_parent_) {
+        void* parent = field_get_parent_(field);
+        if (parent) {
+          owner_storage = className(parent);
+          if (!owner_storage.empty()) owner = owner_storage.c_str();
+        }
+      }
+      if (visitor) visitor(owner, name ? name : "?", offset, context);
+    }
+    current = class_get_parent_ ? class_get_parent_(current) : nullptr;
+  }
 }
 
 void* Il2CppApi::methodPointer(void* method_info) const {

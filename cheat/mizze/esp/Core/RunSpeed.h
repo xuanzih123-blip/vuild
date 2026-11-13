@@ -3,8 +3,12 @@
 
 namespace RunSpeed {
 constexpr uint64_t Offset=0x3c8;
+// Server safe range. A move speed far above what a human reaches is the
+// easiest thing for the server to see, so the multiplier stays inside the
+// range a real player can produce.
+inline constexpr float kMaxSafeScale = 1.5f;
 inline float Value(float value) {
-    return std::isfinite(value)?std::clamp(value,0.1f,30.0f):6.0f;
+    return std::isfinite(value)?std::clamp(value,0.1f,kMaxSafeScale):1.0f;
 }
 class Controller {
     WeaponFeatures::Identity identity_{};

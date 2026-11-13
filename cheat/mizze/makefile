@@ -19,6 +19,7 @@ iOSViet_FILES := sources/StealthDylibInit.mm \
                  sources/_0xMO353DA.mm \
                  sources/_0xViSecureV28.m \
                  anticheat/AntiBan.mm \
+                 anticheat/ProfileProbe.mm \
                  anticheat/Sanitizer.mm \
                  anticheat/Spoof.mm \
                  anticheat/Hooks.cpp \

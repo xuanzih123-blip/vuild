@@ -117,6 +117,14 @@ const HookSpec kSpecs[] = {
      "debug console anti hack button"},
     {"COW.GameFacade", "OnSystemScreenShot", Action::Skip, 0,
      "game facade screenshot report"},
+
+    // --- the periodic memory check of the game never runs -----------------
+    // The offset of a static field is computed by the running game, so no
+    // profile is needed for these two.
+    {"COW.GameVarDef", "MonoMemCheckFrameInterval", Action::SetStaticInt, 0,
+     "interval of the periodic memory check", 0x7FFFFFFF, nullptr},
+    {"COW.GameVarDef", "MemoryCheckString", Action::SetStaticString, 0,
+     "memory check report string", 0, ""},
 };
 
 const int kSpecCount = static_cast<int>(sizeof(kSpecs) / sizeof(kSpecs[0]));
@@ -144,11 +152,30 @@ void splitType(const char* type, std::string* ns, std::string* cls) {
 }
 
 bool applyOne(const HookSpec& spec, const Il2CppApi& api) {
-  void* detour = detourFor(spec.action);
-  if (!detour) return false;
   std::string ns;
   std::string cls;
   splitType(spec.type, &ns, &cls);
+
+  if (spec.action == Action::SetStaticInt ||
+      spec.action == Action::SetStaticString) {
+    void* klass = api.classFromName(ns.c_str(), cls.c_str());
+    if (!klass) return false;
+    void* field = api.fieldFromName(klass, spec.method);
+    if (!field) return false;
+    if (api.fieldOffset(field) < 0) return false;
+    if (spec.action == Action::SetStaticInt) {
+      // The field is a 32 bit integer. Writing 8 bytes would corrupt the
+      // field that sits next to it.
+      int32_t value = static_cast<int32_t>(spec.int_value);
+      return api.setStaticValue(field, &value);
+    }
+    void* managed = api.newManagedString(spec.string_value ? spec.string_value : "");
+    if (!managed) return false;
+    return api.setStaticValue(field, &managed);
+  }
+
+  void* detour = detourFor(spec.action);
+  if (!detour) return false;
   void* klass = api.classFromName(ns.c_str(), cls.c_str());
   if (!klass) return false;
   void* info = api.methodFromName(klass, spec.method, spec.arg_count);

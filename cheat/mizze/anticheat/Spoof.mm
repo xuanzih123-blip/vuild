@@ -72,6 +72,7 @@ typedef int (*StatFn)(const char*, struct stat*);
 typedef DIR* (*OpendirFn)(const char*);
 typedef struct dirent* (*ReaddirFn)(DIR*);
 typedef char* (*GetenvFn)(const char*);
+typedef void* (*DlopenFn)(const char*, int);
 
 OpenFn real_open() {
   static OpenFn fn = reinterpret_cast<OpenFn>(dlsym(RTLD_NEXT, "open"));
@@ -111,6 +112,35 @@ ReaddirFn real_readdir() {
 GetenvFn real_getenv() {
   static GetenvFn fn = reinterpret_cast<GetenvFn>(dlsym(RTLD_NEXT, "getenv"));
   return fn;
+}
+
+DlopenFn real_dlopen() {
+  static DlopenFn fn = reinterpret_cast<DlopenFn>(dlsym(RTLD_NEXT, "dlopen"));
+  return fn;
+}
+
+// The native security libraries of the game. None of them is inside the game
+// binary, so they arrive as a separate library and are refused here.
+const char* const kBlockedLibraries[] = {
+    "tersafe", "TerSafe", "anosdk", "AnoSDK", "libano", "ffantihack",
+    "antihack", "anticheat", "tp2_", "tp2sdk",
+};
+
+bool IsBlockedLibrary(const char* path) {
+  if (!path) return false;
+  for (const char* needle : kBlockedLibraries) {
+    if (strstr(path, needle)) return true;
+  }
+  return false;
+}
+
+// Everything that is not a system library is worth a log line: the security
+// library of the game arrives under a name nobody expects.
+bool IsInterestingLibrary(const char* path) {
+  if (!path) return false;
+  if (strncmp(path, "/System/", 8) == 0) return false;
+  if (strncmp(path, "/usr/lib/", 9) == 0) return false;
+  return true;
 }
 
 bool IsMapsPath(const char* path) {
@@ -258,6 +288,19 @@ char* TIZGetenv(const char* name) {
   return fn(name);
 }
 
+void* TIZDlopen(const char* path, int mode) {
+  if (IsBlockedLibrary(path)) {
+    NSLog(@"[Mizze] blocked native SDK load: %s", path ? path : "(null)");
+    return nullptr;
+  }
+  if (IsInterestingLibrary(path)) {
+    NSLog(@"[Mizze] dlopen %s", path);
+  }
+  DlopenFn fn = real_dlopen();
+  if (!fn) return nullptr;
+  return fn(path, mode);
+}
+
 }  // namespace
 }  // namespace spoof
 }  // namespace mizze
@@ -317,4 +360,12 @@ __attribute__((used)) static struct {
 } tiz_interpose_getenv __attribute__((section("__DATA,__interpose"))) = {
     (const void*)(uintptr_t)&mizze::spoof::TIZGetenv,
     (const void*)(uintptr_t)&getenv,
+};
+
+__attribute__((used)) static struct {
+  const void* replacement;
+  const void* replacee;
+} tiz_interpose_dlopen __attribute__((section("__DATA,__interpose"))) = {
+    (const void*)(uintptr_t)&mizze::spoof::TIZDlopen,
+    (const void*)(uintptr_t)&dlopen,
 };

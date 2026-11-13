@@ -19,6 +19,7 @@
 
 #include "Hooks.h"
 #include "Il2CppApi.h"
+#include "ProfileProbe.h"
 #include "Sanitizer.h"
 
 namespace mizze {
@@ -30,7 +31,7 @@ void* InstallThread(void* unused) {
     // The device log tells us exactly which build is running.
     NSBundle* bundle = [NSBundle mainBundle];
     NSLog(@"[Mizze] bundle %@ version %@ build %@", bundle.bundleIdentifier,
-          bundle.objectForInfoDictionaryKey:@"CFBundleShortVersionString"],
+          bundle.objectForInfoDictionaryKey:@"CFBundleShortVersionString",
           bundle.objectForInfoDictionaryKey:@"CFBundleVersion"]);
 
     sanitize::DenyDebuggerAttach();
@@ -61,6 +62,10 @@ void* InstallThread(void* unused) {
       usleep(500 * 1000);
     }
     NSLog(@"[Mizze] runtime %@", api.runtimeReady() ? @"ready" : @"not ready");
+
+    // The offset profile of the game is read out of the running game, so a
+    // build that moved its fields is visible in the log.
+    probe::logProfile(api);
 
     HookStats stats = installHooks(api);
     NSLog(@"[Mizze] hooks installed %d, failed %d", stats.installed, stats.failed);

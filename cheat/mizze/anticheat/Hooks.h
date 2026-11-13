@@ -8,17 +8,21 @@
 namespace mizze {
 
 enum class Action {
-  ReturnFalse,  // the managed method answers false
-  ReturnTrue,   // the managed method answers true
-  Skip,         // the managed method does nothing
+  ReturnFalse,    // the managed method answers false
+  ReturnTrue,     // the managed method answers true
+  Skip,           // the managed method does nothing
+  SetStaticInt,   // write an integer into a static field
+  SetStaticString,// write a managed string into a static field
 };
 
 struct HookSpec {
   const char* type;    // managed class, "COW.GameFacade"
-  const char* method;  // managed method
+  const char* method;  // managed method or managed field
   Action action;
   int arg_count;       // argument count, disambiguates overloads
   const char* note;
+  int64_t int_value;       // value for SetStaticInt
+  const char* string_value; // value for SetStaticString
 };
 
 struct HookStats {

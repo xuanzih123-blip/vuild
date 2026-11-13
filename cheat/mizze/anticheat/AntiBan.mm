@@ -31,8 +31,8 @@ void* InstallThread(void* unused) {
     // The device log tells us exactly which build is running.
     NSBundle* bundle = [NSBundle mainBundle];
     NSLog(@"[Mizze] bundle %@ version %@ build %@", bundle.bundleIdentifier,
-          bundle.objectForInfoDictionaryKey:@"CFBundleShortVersionString",
-          bundle.objectForInfoDictionaryKey:@"CFBundleVersion"]);
+          [bundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"],
+          [bundle objectForInfoDictionaryKey:@"CFBundleVersion"]);
 
     sanitize::DenyDebuggerAttach();
     sanitize::CleanEnvironment();

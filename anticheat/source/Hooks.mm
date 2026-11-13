@@ -7,6 +7,8 @@
 // ElleKit, when the device has it.
 #import <Foundation/Foundation.h>
 
+#include <dlfcn.h>
+
 #include <cstdint>
 #include <cstring>
 #include <string>
@@ -15,11 +17,19 @@
 #include "HookTable.h"
 #include "Il2CppResolver.h"
 
-extern "C" void MSHookFunction(void* symbol, void* replacement, void** result)
-    __attribute__((weak));
-
 namespace tiz {
 namespace {
+
+// MSHookFunction comes from Substrate / ElleKit, which is not linked against
+// here (a weak undefined symbol is an error for ld64). It is resolved at run
+// time instead, and the pattern fallback is simply skipped when it is absent.
+typedef void (*MSHookFunctionFn)(void* symbol, void* replacement, void** result);
+
+MSHookFunctionFn MSHookFunctionPtr() {
+  static MSHookFunctionFn fn =
+      reinterpret_cast<MSHookFunctionFn>(dlsym(RTLD_DEFAULT, "MSHookFunction"));
+  return fn;
+}
 
 // The detours ignore the original arguments on purpose: they replace the
 // call, so the argument registers are simply not consumed.
@@ -122,9 +132,10 @@ InstallReport installHooks(const HookTable& table, Il2CppResolver& resolver) {
       continue;
     }
 
-    if (MSHookFunction) {
+    MSHookFunctionFn hook_fn = MSHookFunctionPtr();
+    if (hook_fn) {
       void* original = nullptr;
-      MSHookFunction(m.address, detour, &original);
+      hook_fn(m.address, detour, &original);
       report.installed++;
       NSLog(@"[TIZAntiCheat] hooked %s.%s (pattern, %p)", e.type_name.c_str(),
             e.method_name.c_str(), m.address);

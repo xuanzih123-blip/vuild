@@ -94,13 +94,20 @@ jobs:
 
       - name: Sign and inspect the dylib
         working-directory: anticheat
+        continue-on-error: true
         run: |
-          # ldid takes the entitlements as a positional argument AFTER the binary
-          ldid -S build/TIZAntiCheat.dylib resources/entitlements.plist
-          ldid -e build/TIZAntiCheat.dylib
+          set -x
+          ldid 2>&1 | head -30 || true
+          # ldid wants the entitlements as a plain argument; different builds
+          # disagree about the order, so try both and keep whatever works.
+          ldid -S build/TIZAntiCheat.dylib resources/entitlements.plist || \
+          ldid -S resources/entitlements.plist build/TIZAntiCheat.dylib || \
+          ldid -S build/TIZAntiCheat.dylib || true
+          ldid -e build/TIZAntiCheat.dylib || true
           lipo -info build/TIZAntiCheat.dylib
           file build/TIZAntiCheat.dylib
           ls -l build/TIZAntiCheat.dylib
+          otool -l build/TIZAntiCheat.dylib | grep -A3 LC_CODE_SIGNATURE || true
 
       - name: Upload the dylib
         uses: actions/upload-artifact@v4

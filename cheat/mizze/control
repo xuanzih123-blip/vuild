@@ -1,0 +1,8 @@
+Package: com.hoanghadev.mizze.nokey
+Name: Mizze Free Fire No Key
+Version: 1.0
+Architecture: iphoneos-arm
+Description: Standalone Free Fire dylib menu source.
+Maintainer: HoangHaDev
+Author: HoangHaDev
+Section: Tweaks

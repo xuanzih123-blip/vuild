@@ -4,6 +4,12 @@ anticheat/.theos/
 anticheat/packages/
 anticheat/tools/__pycache__/
 
+# the menu build output
+cheat/mizze/build/
+cheat/mizze/.theos/
+cheat/mizze/packages/
+cheat/mizze/obj/
+
 # the game's metadata is 54 MB and only needed to regenerate the hook table
 global-metadata.dat
 

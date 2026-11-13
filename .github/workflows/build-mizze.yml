@@ -1,0 +1,89 @@
+name: build-mizze
+
+# Builds the "Mizze Free Fire No Key" dylib: the menu with the licence check
+# replaced by a local stub, plus the anti ban layer.
+#
+# The iOS SDK and Theos only exist on Apple hosts, so the job runs on a macOS
+# runner. The client archive of the vendor is not needed any more: the stub in
+# sources/APIClientStub.mm replaces it.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "cheat/mizze/**"
+      - ".github/workflows/build-mizze.yml"
+  workflow_dispatch:
+    inputs:
+      variant:
+        description: "game variant"
+        default: "th"
+        type: choice
+        options: [th, max]
+
+jobs:
+  build:
+    name: mizze (theos, ${{ github.event.inputs.variant || 'th' }})
+    runs-on: macos-15
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Theos
+        uses: Randomblock1/theos-action@v1
+        with:
+          theos-sdks: 'https://github.com/theos/sdks'
+
+      - name: Install ldid
+        run: brew install ldid
+
+      - name: Build the dylib
+        working-directory: cheat/mizze
+        env:
+          CFLAGS: "-Wl,-U,___isPlatformVersionAtLeast"
+          TARGET: iphone:clang:16.5:13.0
+          ARCHS: arm64
+        run: |
+          set -x
+          make clean || true
+          make GAME_VARIANT=${{ github.event.inputs.variant || 'th' }}
+
+      - name: Collect the dylib
+        working-directory: cheat/mizze
+        run: |
+          set -x
+          find .theos/obj -name "iOSViet.dylib"
+          mkdir -p build/install
+          cp "$(find .theos/obj -name 'iOSViet.dylib' | head -1)" build/install/libsubsystem.dylib
+          cp layout/var/mobile/Library/MobileSubstrate/DynamicLibraries/iOSViet.plist build/install/
+          ls -l build/install
+
+      - name: Sign and inspect
+        working-directory: cheat/mizze
+        continue-on-error: true
+        run: |
+          set -x
+          # ldid takes the entitlements glued to the -S flag
+          ldid -Sresources/entitlements.plist build/install/libsubsystem.dylib || \
+          ldid -S build/install/libsubsystem.dylib || true
+          ldid -e build/install/libsubsystem.dylib || true
+          lipo -info build/install/libsubsystem.dylib
+          file build/install/libsubsystem.dylib
+          otool -l build/install/libsubsystem.dylib | grep -A3 LC_CODE_SIGNATURE || true
+
+      - name: Smoke test the dylib
+        working-directory: cheat/mizze
+        run: |
+          set -x
+          ls -l build/install/libsubsystem.dylib
+          strings build/install/libsubsystem.dylib | grep -c -E "Mizze|anticheat" || true
+          strings build/install/libsubsystem.dylib | grep -m5 -E "IsEmulator|LogReportCheat|ProcessAccountForbidden" || true
+          nm -gU build/install/libsubsystem.dylib | head -10 || true
+
+      - name: Upload the install bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mizze-install
+          path: cheat/mizze/build/install
+          if-no-files-found: error

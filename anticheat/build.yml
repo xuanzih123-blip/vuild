@@ -149,7 +149,7 @@ sources_inline:
         if (lc->cmd == LC_SEGMENT_64) {
           const struct segment_command_64* seg =
               reinterpret_cast<const struct segment_command_64*>(lc);
-          uintptr_t start = reinterpret_cast<uintptr_t>(seg->vmaddr) -
+          uintptr_t start = static_cast<uintptr_t>(seg->vmaddr) -
                             reinterpret_cast<uintptr_t>(header);
           uintptr_t end = start + seg->vmsize;
           if (end > highest) highest = end;

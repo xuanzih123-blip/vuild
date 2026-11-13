@@ -28,6 +28,11 @@ void* detourFor(Action action) {
     case Action::ReturnFalse: return reinterpret_cast<void*>(&DetourReturnFalse);
     case Action::ReturnTrue: return reinterpret_cast<void*>(&DetourReturnTrue);
     case Action::Skip: return reinterpret_cast<void*>(&DetourSkip);
+    // The static fields are written through the runtime, not through a
+    // detour, so there is no function to point at.
+    case Action::SetStaticInt:
+    case Action::SetStaticString:
+      return nullptr;
   }
   return nullptr;
 }

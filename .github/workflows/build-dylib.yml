@@ -1,0 +1,116 @@
+name: build-dylib
+
+# Builds the TIZAntiCheat iOS dylib. The iOS SDK only exists on Apple hosts,
+# so the job runs on a macOS runner; the committed hook table is used, the
+# 54 MB global-metadata.dat is not needed in the repo.
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "anticheat/**"
+      - ".github/workflows/build-dylib.yml"
+  pull_request:
+    paths:
+      - "anticheat/**"
+  workflow_dispatch:
+    inputs:
+      toolchain:
+        description: "build path"
+        default: "xcrun"
+        type: choice
+        options: [xcrun, theos]
+
+env:
+  TOOLCHAIN: ${{ github.event.inputs.toolchain || 'xcrun' }}
+
+jobs:
+  host-check:
+    name: host check (portable core)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install build dependencies
+        run: |
+          python3 -m pip install --upgrade pyyaml
+          sudo apt-get update
+          sudo apt-get install -y cmake g++
+      - name: Check that build.yml still matches source/
+        run: python3 anticheat/tools/inline_sources.py --check
+      - name: Compile and run the portable core test
+        run: |
+          cmake -S anticheat/tools/syntax_check -B anticheat/build/hostcheck
+          cmake --build anticheat/build/hostcheck --config Release
+          anticheat/build/hostcheck/tiz_anticheat_check \
+            anticheat/source/anticheat_hooks.json
+
+  dylib:
+    name: dylib (macos, ${{ github.event.inputs.toolchain || 'xcrun' }})
+    needs: host-check
+    runs-on: macos-14
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build dependencies
+        run: |
+          python3 -m pip install --upgrade pyyaml
+          brew install ldid
+
+      - name: Cache Theos
+        if: env.TOOLCHAIN == 'theos'
+        uses: actions/cache@v4
+        with:
+          path: ~/theos
+          key: theos-${{ runner.os }}-${{ runner.arch }}
+
+      - name: Install Theos
+        if: env.TOOLCHAIN == 'theos'
+        run: |
+          export THEOS="$HOME/theos"
+          echo "THEOS=$THEOS" >> "$GITHUB_ENV"
+          if [ ! -d "$THEOS" ]; then
+            bash -c "$(curl -fsSL https://theos.com/installer.sh)"
+          fi
+          "$THEOS/bin/install-theos" "$THEOS" || true
+
+      - name: Materialise the sources out of build.yml
+        working-directory: anticheat
+        run: python3 build.py --only materialise
+
+      - name: Compile the dylib
+        working-directory: anticheat
+        run: python3 build.py --only compile --toolchain "$TOOLCHAIN"
+
+      - name: Sign and inspect the dylib
+        working-directory: anticheat
+        run: |
+          ldid -S -e resources/entitlements.plist build/TIZAntiCheat.dylib
+          lipo -info build/TIZAntiCheat.dylib
+          file build/TIZAntiCheat.dylib
+          ls -l build/TIZAntiCheat.dylib
+
+      - name: Upload the dylib
+        uses: actions/upload-artifact@v4
+        with:
+          name: TIZAntiCheat-dylib
+          path: anticheat/build/TIZAntiCheat.dylib
+          if-no-files-found: error
+
+      - name: Upload the hook table and the entitlements
+        uses: actions/upload-artifact@v4
+        with:
+          name: TIZAntiCheat-hooks
+          path: |
+            anticheat/source/anticheat_hooks.json
+            anticheat/resources/entitlements.plist

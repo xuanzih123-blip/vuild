@@ -67,6 +67,10 @@ class Il2CppResolver {
   // needs no Substrate and it cannot corrupt the target function.
   bool setMethodPointer(void* method_info, void* detour);
 
+  // True when the method pointer still points at `detour`. Used to detect a
+  // hotfix that restored the original implementation.
+  bool methodPointerMatches(void* method_info, void* detour) const;
+
   // Creates a managed string (Il2CppString*) for static string fields.
   void* newManagedString(const std::string& utf8) const;
 

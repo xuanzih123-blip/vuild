@@ -92,6 +92,17 @@ int WriteStaticString(Il2CppResolver& resolver, const HookEntry& e) {
   return 1;
 }
 
+// Registry of the method pointer writes. A hotfix (IFix) can restore the
+// original implementation while the game runs, so the writes are kept here
+// and re-applied until the process dies.
+struct InstalledHook {
+  void* method_info;
+  void* detour;
+  std::string label;
+};
+
+std::vector<InstalledHook> g_installed;
+
 // One attempt on one entry. Report counters are only touched on success.
 Attempt TryInstall(const HookEntry& e, Il2CppResolver& resolver,
                    InstallReport& report) {
@@ -129,6 +140,11 @@ Attempt TryInstall(const HookEntry& e, Il2CppResolver& resolver,
     // rewrite the method pointer in place
     if (resolver.setMethodPointer(m.method_info, detour)) {
       report.installed++;
+      InstalledHook hook;
+      hook.method_info = m.method_info;
+      hook.detour = detour;
+      hook.label = e.type_name + "." + e.method_name;
+      g_installed.push_back(hook);
       NSLog(@"[TIZAntiCheat] hooked %s.%s (method info %p)", e.type_name.c_str(),
             e.method_name.c_str(), m.method_info);
       return Attempt::Done;
@@ -192,6 +208,22 @@ InstallReport installHooks(const HookTable& table, Il2CppResolver& resolver) {
           e->method_name.c_str());
   }
   return report;
+}
+
+// Re-applies the method pointer writes. The game can hotfix a method while it
+// runs (IFix), which puts the original implementation back; writing the
+// detour again undoes that. Returns how many hooks had to be restored.
+int reapplyHooks(Il2CppResolver& resolver) {
+  int restored = 0;
+  for (const InstalledHook& h : g_installed) {
+    if (resolver.methodPointerMatches(h.method_info, h.detour)) continue;
+    if (resolver.setMethodPointer(h.method_info, h.detour)) {
+      restored++;
+      NSLog(@"[TIZAntiCheat] re-applied %s (a hotfix restored it)",
+            h.label.c_str());
+    }
+  }
+  return restored;
 }
 
 }  // namespace tiz

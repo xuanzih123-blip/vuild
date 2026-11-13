@@ -24,6 +24,7 @@
 namespace tiz {
 
 InstallReport installHooks(const HookTable& table, Il2CppResolver& resolver);
+int reapplyHooks(Il2CppResolver& resolver);
 
 namespace {
 
@@ -122,6 +123,12 @@ void* InstallThread(void* unused) {
       InstallReport report = installHooks(*table, resolver);
       NSLog(@"[TIZAntiCheat] installed %d, skipped %d, failed %d",
             report.installed, report.skipped, report.failed);
+      // Keep the hooks in place: a hotfix can put the original implementation
+      // back while the game runs, so the pointers are rewritten every 2 s.
+      while (true) {
+        usleep(2 * 1000 * 1000);
+        reapplyHooks(resolver);
+      }
       delete table;
       return nullptr;
     }

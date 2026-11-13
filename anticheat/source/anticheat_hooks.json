@@ -28,7 +28,8 @@
    "token": 100698482,
    "arg_count": 0,
    "field_offset": 0,
-   "kind": "method"
+   "kind": "method",
+   "declared_by": 12379
   },
   {
    "type": "COW.GameFacade",
@@ -38,7 +39,8 @@
    "token": 100698524,
    "arg_count": 0,
    "field_offset": 0,
-   "kind": "method"
+   "kind": "method",
+   "declared_by": 12379
   },
   {
    "type": "COW.GameConfig",
@@ -48,7 +50,8 @@
    "token": 100858663,
    "arg_count": 0,
    "field_offset": 0,
-   "kind": "method"
+   "kind": "method",
+   "declared_by": 29864
   },
   {
    "type": "COW.EventLogger",
@@ -58,7 +61,8 @@
    "token": 100696721,
    "arg_count": 10,
    "field_offset": 0,
-   "kind": "method"
+   "kind": "method",
+   "declared_by": 12331
   },
   {
    "type": "COW.EventLogger",
@@ -68,7 +72,8 @@
    "token": 100696722,
    "arg_count": 8,
    "field_offset": 0,
-   "kind": "method"
+   "kind": "method",
+   "declared_by": 12331
   },
   {
    "type": "COW.EventLogger",
@@ -78,7 +83,8 @@
    "token": 100696895,
    "arg_count": 1,
    "field_offset": 0,
-   "kind": "method"
+   "kind": "method",
+   "declared_by": 12331
   },
   {
    "type": "COW.UIModelLogin",
@@ -88,7 +94,8 @@
    "token": 100833970,
    "arg_count": 0,
    "field_offset": 0,
-   "kind": "method"
+   "kind": "method",
+   "declared_by": 24519
   },
   {
    "type": "COW.UIModelLogin",
@@ -98,7 +105,8 @@
    "token": 100833971,
    "arg_count": 0,
    "field_offset": 0,
-   "kind": "method"
+   "kind": "method",
+   "declared_by": 24519
   },
   {
    "type": "COW.UIModelLogin",
@@ -108,7 +116,8 @@
    "token": 100833973,
    "arg_count": 1,
    "field_offset": 0,
-   "kind": "method"
+   "kind": "method",
+   "declared_by": 24519
   },
   {
    "type": "COW.UIModelAntiHackWindow",
@@ -118,7 +127,8 @@
    "token": 100825127,
    "arg_count": 1,
    "field_offset": 0,
-   "kind": "method"
+   "kind": "method",
+   "declared_by": 23404
   },
   {
    "type": "COW.UINavigationUtil",
@@ -128,7 +138,8 @@
    "token": 100696437,
    "arg_count": 0,
    "field_offset": 0,
-   "kind": "method"
+   "kind": "method",
+   "declared_by": 11716
   },
   {
    "type": "COW.UIDebugConsoleController",
@@ -138,7 +149,8 @@
    "token": 100728478,
    "arg_count": 0,
    "field_offset": 0,
-   "kind": "method"
+   "kind": "method",
+   "declared_by": 14983
   },
   {
    "type": "COW.GameVarDef",
@@ -149,7 +161,8 @@
    "arg_count": 0,
    "field_offset": 0,
    "int_value": 2147483647,
-   "kind": "field"
+   "kind": "field",
+   "declared_by": 11679
   },
   {
    "type": "COW.GameVarDef",
@@ -160,7 +173,8 @@
    "arg_count": 0,
    "field_offset": 0,
    "string_value": "",
-   "kind": "field"
+   "kind": "field",
+   "declared_by": 11679
   },
   {
    "type": "COW.GameFacade",
@@ -170,7 +184,294 @@
    "token": 67203403,
    "arg_count": 0,
    "field_offset": 0,
-   "kind": "field"
+   "kind": "field",
+   "declared_by": 12379
+  },
+  {
+   "type": "COW.UIModelLogin",
+   "method": "ProcessAccountForbidden",
+   "action": "skip",
+   "note": "the ban dialog the server triggers at login",
+   "token": 100833931,
+   "arg_count": 1,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 24519
+  },
+  {
+   "type": "COW.UIModelLogin",
+   "method": "ShowEmailRegisterForbiddenTips",
+   "action": "skip",
+   "note": "forbidden notice at login",
+   "token": 100833863,
+   "arg_count": 0,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 24519
+  },
+  {
+   "type": "COW.UIModelLogin",
+   "method": "ProcessffantihackOpen",
+   "action": "skip",
+   "note": "anti hack notice the server pushes at login",
+   "token": 100833969,
+   "arg_count": 1,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 24519
+  },
+  {
+   "type": "COW.UIModelLogin",
+   "method": "GetffantihackEnabledTempValue",
+   "action": "return_false",
+   "note": "cached anti hack flag",
+   "token": 100833972,
+   "arg_count": 1,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 24519
+  },
+  {
+   "type": "COW.LobbyServiceConnectionHandler",
+   "method": "OnGroupQuickMatchCreditPunish",
+   "action": "skip",
+   "note": "credit punish notification from the server",
+   "token": 100709047,
+   "arg_count": 2,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 13234
+  },
+  {
+   "type": "COW.LobbyServiceConnectionHandler",
+   "method": "OnGroupJoinHackerGroupNtf",
+   "action": "skip",
+   "note": "you joined a hacker group notice",
+   "token": 100709066,
+   "arg_count": 1,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 13234
+  },
+  {
+   "type": "COW.LobbyServiceConnectionHandler",
+   "method": "OnMsgMatchMakingCdtHackerNtf",
+   "action": "skip",
+   "note": "matchmaking cheat notification",
+   "token": 100709076,
+   "arg_count": 1,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 13234
+  },
+  {
+   "type": "COW.UIAntiHackWindowController",
+   "method": "ShowBanListWeb",
+   "action": "skip",
+   "note": "ban list web view",
+   "token": 100765675,
+   "arg_count": 0,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 18115
+  },
+  {
+   "type": "COW.UIAntiHackWindowController",
+   "method": "ShowAntiHackWeb",
+   "action": "skip",
+   "note": "anti hack web view",
+   "token": 100765674,
+   "arg_count": 0,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 18115
+  },
+  {
+   "type": "COW.UIHudMatchResultItemBaseController",
+   "method": "OnAddMatchBlackList",
+   "action": "skip",
+   "note": "adds an entry to the match blacklist",
+   "token": 100744940,
+   "arg_count": 1,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 16327
+  },
+  {
+   "type": "COW.UIHudMatchResultItemBaseController",
+   "method": "OnGetMatchBlackListCount",
+   "action": "skip",
+   "note": "blacklist counter",
+   "token": 100744941,
+   "arg_count": 1,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 16327
+  },
+  {
+   "type": "COW.UIModelProfile",
+   "method": "IsProfileDataPunished",
+   "action": "return_false",
+   "note": "profile punishment flag",
+   "token": 100837518,
+   "arg_count": 1,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 24858
+  },
+  {
+   "type": "COW.UIModelProfile",
+   "method": "GetBlacklistInfo",
+   "action": "skip",
+   "note": "blacklist info",
+   "token": 100837554,
+   "arg_count": 1,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 24858
+  },
+  {
+   "type": "COW.UIModelProfile",
+   "method": "UpdateBlacklistInfo",
+   "action": "skip",
+   "note": "blacklist update",
+   "token": 100837555,
+   "arg_count": 2,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 24858
+  },
+  {
+   "type": "COW.UIModelGroup",
+   "method": "CheckNewMemberCreditScorePunishTip",
+   "action": "skip",
+   "note": "credit score punish tip",
+   "token": 100830920,
+   "arg_count": 1,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 24190
+  },
+  {
+   "type": "COW.UIHudCSMatchResultController",
+   "method": "CheckNeedShowQuickReportAndGetPunishedPlayName",
+   "action": "skip",
+   "note": "quick report and punished player name",
+   "token": 100743810,
+   "arg_count": 1,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 16239
+  },
+  {
+   "type": "COW.UIHudLadderMatchResultController",
+   "method": "InitAntiHackProtect",
+   "action": "skip",
+   "note": "anti hack protect UI on the result screen",
+   "token": 100744448,
+   "arg_count": 1,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 16302
+  },
+  {
+   "type": "COW.UIModelGroup",
+   "method": "CheckEmulatorWarningEnable",
+   "action": "return_false",
+   "note": "emulator warning switch",
+   "token": 100830918,
+   "arg_count": 0,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 24190
+  },
+  {
+   "type": "COW.UIModelGroup",
+   "method": "CheckAndShowEmulatorWarningTip",
+   "action": "skip",
+   "note": "emulator warning tip",
+   "token": 100830919,
+   "arg_count": 1,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 24190
+  },
+  {
+   "type": "COW.UIHudReplayMatchIDController",
+   "method": "SetEmulatorIcon",
+   "action": "skip",
+   "note": "emulator icon in the replay header",
+   "token": 100791340,
+   "arg_count": 1,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 20169
+  },
+  {
+   "type": "COW.MobileReplayManager",
+   "method": "GetReplayIsEmulatorPool",
+   "action": "return_false",
+   "note": "emulator pool flag of a replay",
+   "token": 100701232,
+   "arg_count": 0,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 12588
+  },
+  {
+   "type": "COW.UILobbyLWObserveNavigationController",
+   "method": "OnAntihackBtnClick",
+   "action": "skip",
+   "note": "anti hack button in the lobby",
+   "token": 100739667,
+   "arg_count": 0,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 15940
+  },
+  {
+   "type": "COW.UILobbyV2SubSystemController",
+   "method": "OnAntiHackCenterBtnClick",
+   "action": "skip",
+   "note": "anti hack centre button",
+   "token": 100741412,
+   "arg_count": 0,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 16056
+  },
+  {
+   "type": "COW.UILobbyV2SubSystemController",
+   "method": "RefreshAntiHackRedPoint",
+   "action": "skip",
+   "note": "anti hack red dot in the lobby",
+   "token": 100741395,
+   "arg_count": 0,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 16056
+  },
+  {
+   "type": "COW.UIProfileController",
+   "method": "GetCustomProfilePunishConfig",
+   "action": "return_false",
+   "note": "custom profile punish config",
+   "token": 100804638,
+   "arg_count": 0,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 21305
+  },
+  {
+   "type": "COW.UIProfileController",
+   "method": "RefreshCustomProfilePunishState",
+   "action": "skip",
+   "note": "custom profile punish state",
+   "token": 100804639,
+   "arg_count": 0,
+   "field_offset": 0,
+   "kind": "method",
+   "declared_by": 21305
   }
  ]
 }

@@ -20,6 +20,7 @@ MARKER = "sources_inline:"
 SOURCES = [
     "source/main.mm",
     "source/Hooks.mm",
+    "source/SdkBlock.mm",
     "source/HookTable.cpp",
     "source/HookTable.h",
     "source/Il2CppResolver.cpp",

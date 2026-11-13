@@ -11,6 +11,7 @@ TWEAK_NAME = TIZAntiCheat
 
 TIZAntiCheat_FILES = source/main.mm \
                      source/Hooks.mm \
+                     source/SdkBlock.mm \
                      source/HookTable.cpp \
                      source/Il2CppResolver.cpp
 

@@ -51,6 +51,61 @@ WANTED = [
      "memory check report string"),
     ("COW.GameFacade", "m_IsEmulator", "skip",
      "instance field, not a static: needs a per instance write"),
+
+    # --- the server verdict must never land on the client -------------------
+    ("COW.UIModelLogin", "ProcessAccountForbidden", "skip",
+     "the ban dialog the server triggers at login"),
+    ("COW.UIModelLogin", "ShowEmailRegisterForbiddenTips", "skip",
+     "forbidden notice at login"),
+    ("COW.UIModelLogin", "ProcessffantihackOpen", "skip",
+     "anti hack notice the server pushes at login"),
+    ("COW.UIModelLogin", "GetffantihackEnabledTempValue", "return_false",
+     "cached anti hack flag"),
+    ("COW.LobbyServiceConnectionHandler", "OnGroupQuickMatchCreditPunish",
+     "skip", "credit punish notification from the server"),
+    ("COW.LobbyServiceConnectionHandler", "OnGroupJoinHackerGroupNtf", "skip",
+     "you joined a hacker group notice"),
+    ("COW.LobbyServiceConnectionHandler", "OnMsgMatchMakingCdtHackerNtf",
+     "skip", "matchmaking cheat notification"),
+    ("COW.UIAntiHackWindowController", "ShowBanListWeb", "skip",
+     "ban list web view"),
+    ("COW.UIAntiHackWindowController", "ShowAntiHackWeb", "skip",
+     "anti hack web view"),
+    ("COW.UIHudMatchResultItemBaseController", "OnAddMatchBlackList", "skip",
+     "adds an entry to the match blacklist"),
+    ("COW.UIHudMatchResultItemBaseController", "OnGetMatchBlackListCount",
+     "skip", "blacklist counter"),
+    ("COW.UIModelProfile", "IsProfileDataPunished", "return_false",
+     "profile punishment flag"),
+    ("COW.UIModelProfile", "GetBlacklistInfo", "skip", "blacklist info"),
+    ("COW.UIModelProfile", "UpdateBlacklistInfo", "skip", "blacklist update"),
+    ("COW.UIModelGroup", "CheckNewMemberCreditScorePunishTip", "skip",
+     "credit score punish tip"),
+    ("COW.UIHudCSMatchResultController",
+     "CheckNeedShowQuickReportAndGetPunishedPlayName", "skip",
+     "quick report and punished player name"),
+    ("COW.UIHudLadderMatchResultController", "InitAntiHackProtect", "skip",
+     "anti hack protect UI on the result screen"),
+
+    # --- no emulator marks anywhere in the UI -------------------------------
+    ("COW.UIModelGroup", "CheckEmulatorWarningEnable", "return_false",
+     "emulator warning switch"),
+    ("COW.UIModelGroup", "CheckAndShowEmulatorWarningTip", "skip",
+     "emulator warning tip"),
+    ("COW.UIHudReplayMatchIDController", "SetEmulatorIcon", "skip",
+     "emulator icon in the replay header"),
+    ("COW.MobileReplayManager", "GetReplayIsEmulatorPool", "return_false",
+     "emulator pool flag of a replay"),
+    ("COW.UILobbyLWObserveNavigationController", "OnAntihackBtnClick", "skip",
+     "anti hack button in the lobby"),
+    ("COW.UILobbyV2SubSystemController", "OnAntiHackCenterBtnClick", "skip",
+     "anti hack centre button"),
+    ("COW.UILobbyV2SubSystemController", "RefreshAntiHackRedPoint", "skip",
+     "anti hack red dot in the lobby"),
+    ("COW.UIProfileController", "GetCustomProfilePunishConfig", "return_false",
+     "custom profile punish config"),
+    ("COW.UIProfileController", "RefreshCustomProfilePunishState", "skip",
+     "custom profile punish state"),
 ]
 
 # values used by the set_static_* actions
@@ -105,9 +160,15 @@ def main():
     fields_of = {}
     for t in types:
         for k in range(t["method_start"], t["method_start"] + t["method_count"]):
-            methods_of.setdefault(methods[k]["name"], []).append(methods[k])
+            m = dict(methods[k])
+            # metadata v31 dropped declaring_type from the method table, so the
+            # owner is derived from the per type method range
+            m["owner"] = t["idx"]
+            methods_of.setdefault(m["name"], []).append(m)
         for k in range(t["field_start"], t["field_start"] + t["field_count"]):
-            fields_of.setdefault(fields[k]["name"], []).append(fields[k])
+            f = dict(fields[k])
+            f["owner"] = t["idx"]
+            fields_of.setdefault(f["name"], []).append(f)
 
     entries = []
     missing = []
@@ -127,19 +188,34 @@ def main():
         }
         entry.update(VALUES.get((type_name, member), {}))
         found = False
-        for mm in methods_of.get(member, []):
-            if mm["declaring_type"] in (-1, t["idx"]) or True:
+        # Prefer the member that is declared by this exact type: a name like
+        # "OnInit" exists in dozens of classes and the wrong one would give a
+        # wrong token and a wrong argument count.
+        candidates = methods_of.get(member, [])
+        for want_exact in (True, False):
+            for mm in candidates:
+                if want_exact and mm["owner"] != t["idx"]:
+                    continue
                 entry["token"] = mm["token"]
                 entry["arg_count"] = mm["param_count"]
                 entry["kind"] = "method"
+                entry["declared_by"] = mm["owner"]
                 found = True
+                break
+            if found:
                 break
         if not found:
-            for ff in fields_of.get(member, []):
-                entry["token"] = ff["token"]
-                entry["kind"] = "field"
-                found = True
-                break
+            for want_exact in (True, False):
+                for ff in fields_of.get(member, []):
+                    if want_exact and ff["owner"] != t["idx"]:
+                        continue
+                    entry["token"] = ff["token"]
+                    entry["kind"] = "field"
+                    entry["declared_by"] = ff["owner"]
+                    found = True
+                    break
+                if found:
+                    break
         if not found:
             missing.append("%s.%s (member not found)" % (type_name, member))
             continue

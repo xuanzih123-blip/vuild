@@ -196,4 +196,13 @@ bool Il2CppResolver::setMethodPointer(void* method_info, void* detour) {
   return true;
 }
 
+bool Il2CppResolver::methodPointerMatches(void* method_info,
+                                          void* detour) const {
+  if (!method_info || !detour) return false;
+  void** slot = reinterpret_cast<void**>(
+      const_cast<uint8_t*>(static_cast<const uint8_t*>(method_info)) +
+      profile_.method_info_method_pointer);
+  return *slot == detour;
+}
+
 }  // namespace tiz

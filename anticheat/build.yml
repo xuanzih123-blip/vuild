@@ -130,6 +130,7 @@ sources_inline:
     namespace tiz {
 
     InstallReport installHooks(const HookTable& table, Il2CppResolver& resolver);
+    int reapplyHooks(Il2CppResolver& resolver);
 
     namespace {
 
@@ -228,6 +229,12 @@ sources_inline:
           InstallReport report = installHooks(*table, resolver);
           NSLog(@"[TIZAntiCheat] installed %d, skipped %d, failed %d",
                 report.installed, report.skipped, report.failed);
+          // Keep the hooks in place: a hotfix can put the original implementation
+          // back while the game runs, so the pointers are rewritten every 2 s.
+          while (true) {
+            usleep(2 * 1000 * 1000);
+            reapplyHooks(resolver);
+          }
           delete table;
           return nullptr;
         }
@@ -344,6 +351,17 @@ sources_inline:
       return 1;
     }
 
+    // Registry of the method pointer writes. A hotfix (IFix) can restore the
+    // original implementation while the game runs, so the writes are kept here
+    // and re-applied until the process dies.
+    struct InstalledHook {
+      void* method_info;
+      void* detour;
+      std::string label;
+    };
+
+    std::vector<InstalledHook> g_installed;
+
     // One attempt on one entry. Report counters are only touched on success.
     Attempt TryInstall(const HookEntry& e, Il2CppResolver& resolver,
                        InstallReport& report) {
@@ -381,6 +399,11 @@ sources_inline:
         // rewrite the method pointer in place
         if (resolver.setMethodPointer(m.method_info, detour)) {
           report.installed++;
+          InstalledHook hook;
+          hook.method_info = m.method_info;
+          hook.detour = detour;
+          hook.label = e.type_name + "." + e.method_name;
+          g_installed.push_back(hook);
           NSLog(@"[TIZAntiCheat] hooked %s.%s (method info %p)", e.type_name.c_str(),
                 e.method_name.c_str(), m.method_info);
           return Attempt::Done;
@@ -446,7 +469,87 @@ sources_inline:
       return report;
     }
 
+    // Re-applies the method pointer writes. The game can hotfix a method while it
+    // runs (IFix), which puts the original implementation back; writing the
+    // detour again undoes that. Returns how many hooks had to be restored.
+    int reapplyHooks(Il2CppResolver& resolver) {
+      int restored = 0;
+      for (const InstalledHook& h : g_installed) {
+        if (resolver.methodPointerMatches(h.method_info, h.detour)) continue;
+        if (resolver.setMethodPointer(h.method_info, h.detour)) {
+          restored++;
+          NSLog(@"[TIZAntiCheat] re-applied %s (a hotfix restored it)",
+                h.label.c_str());
+        }
+      }
+      return restored;
+    }
+
     }  // namespace tiz
+
+  source/SdkBlock.mm: |
+    // SdkBlock.mm - keeps the native anti cheat SDK from being loaded at all.
+    //
+    // The managed gates (GameFacade.NeedffantihackEmulatorCheck and friends) stop
+    // the SDK from running, but the native library itself is still pulled in by a
+    // P/Invoke. Interposing dlopen keeps it out of the process: the SDK can not
+    // report anything if it was never mapped.
+    //
+    // The interpose only fires for libraries whose name contains one of the
+    // tokens below, so everything else loads normally. Every block is logged so
+    // the device log shows exactly what was refused.
+    #import <Foundation/Foundation.h>
+
+    #include <dlfcn.h>
+
+    #include <cstdint>
+    #include <cstring>
+    #include <string>
+
+    namespace tiz {
+    namespace {
+
+    // Name fragments of the native anti cheat / emulator detection libraries.
+    const char* const kBlockedTokens[] = {
+        "tersafe",    // Tencent TerSafe
+        "tp2_",       // Tencent protect
+        "libano",     // the Ano SDK family
+        "anosdk",
+        "ffantihack", // the FF anti hack bridge
+        "antihack",
+        "anticheat",
+    };
+
+    bool IsBlockedPath(const char* path) {
+      if (!path) return false;
+      std::string s(path);
+      for (const char* token : kBlockedTokens) {
+        if (s.find(token) != std::string::npos) return true;
+      }
+      return false;
+    }
+
+    }  // namespace
+
+    // The replacement for dlopen.
+    extern "C" void* TIZAntiCheatDlOpen(const char* path, int mode) {
+      if (IsBlockedPath(path)) {
+        NSLog(@"[TIZAntiCheat] blocked native SDK load: %s", path);
+        return nullptr;
+      }
+      return dlopen(path, mode);
+    }
+
+    }  // namespace tiz
+
+    // DYLD interpose: the replacement wins for every image loaded after this one.
+    __attribute__((used)) static struct {
+      const void* replacement;
+      const void* replacee;
+    } tiz_interpose_dlopen __attribute__((section("__DATA,__interpose"))) = {
+        (const void*)(uintptr_t)&tiz::TIZAntiCheatDlOpen,
+        (const void*)(uintptr_t)&dlopen,
+    };
 
   source/HookTable.cpp: |
     // HookTable.cpp - JSON reader and hook table loader.
@@ -1082,6 +1185,15 @@ sources_inline:
       return true;
     }
 
+    bool Il2CppResolver::methodPointerMatches(void* method_info,
+                                              void* detour) const {
+      if (!method_info || !detour) return false;
+      void** slot = reinterpret_cast<void**>(
+          const_cast<uint8_t*>(static_cast<const uint8_t*>(method_info)) +
+          profile_.method_info_method_pointer);
+      return *slot == detour;
+    }
+
     }  // namespace tiz
 
   source/Il2CppResolver.h: |
@@ -1153,6 +1265,10 @@ sources_inline:
       // method lands in `detour`. This is the preferred hooking mechanism: it
       // needs no Substrate and it cannot corrupt the target function.
       bool setMethodPointer(void* method_info, void* detour);
+
+      // True when the method pointer still points at `detour`. Used to detect a
+      // hotfix that restored the original implementation.
+      bool methodPointerMatches(void* method_info, void* detour) const;
 
       // Creates a managed string (Il2CppString*) for static string fields.
       void* newManagedString(const std::string& utf8) const;
